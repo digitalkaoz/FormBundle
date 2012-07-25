@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Form\Exception\FormException;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Gregwar\FormBundle\DataTransformer\OneEntityToIdTransformer;
+use Symfony\Component\OptionsResolver\Options;
 
 /**
  * Entity identitifer
@@ -25,23 +26,28 @@ class EntityIdType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->prependClientTransformer(new OneEntityToIdTransformer(
+        $builder->addViewTransformer(new OneEntityToIdTransformer(
             $this->registry->getEntityManager($options['em']),
             $options['class'], 
             $options['property'],
             $options['query_builder']
-        ));
+        ), true);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $hidden = function (Options $options) {
+            return $options['hidden'];
+        };
+        
         $resolver->setDefaults(array(
             'em'                => null,
             'class'             => null,
             'property'          => null,
             'query_builder'     => null,
+            'compound'          => false,
             'type'              => 'hidden',
-            'hidden'            => true,
+            'hidden'            => $hidden,
         ));
     }
     
