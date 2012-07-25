@@ -55,7 +55,8 @@ class EntityIdType extends AbstractType
 
     public function getParent()
     {
-        $options = $this->getDefaultOptions(array());
+        //$options = $this->getDefaultOptions(array());
+        return 'text';
         
         return $options['hidden'] ? 'hidden' : 'text';
     }
